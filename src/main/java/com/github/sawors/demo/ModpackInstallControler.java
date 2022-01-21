@@ -1,31 +1,14 @@
 package com.github.sawors.demo;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.Window;
-import org.eclipse.jgit.api.CloneCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.lib.ProgressMonitor;
-import org.eclipse.jgit.lib.TextProgressMonitor;
-import org.eclipse.jgit.lib.ThreadSafeProgressMonitor;
-import org.eclipse.jgit.util.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.UnsupportedAddressTypeException;
@@ -45,11 +28,22 @@ public class ModpackInstallControler {
     public Text defaultfoldermessage;
     public CheckBox profilecheck;
     public Text installerrormessage;
-    public Button cancelldownload;
-    public TextArea gitoutputmessage;
+    public AnchorPane datainput_LAYER;
+    public AnchorPane installing_LAYER;
     public ProgressBar progressbar;
+    public TextArea gitoutputmessage;
+    public Button cancelldownload;
+    public Button toggler;
+    public Button toggler1;
     private boolean createprofile = true;
     private StringBuilder profilename = new StringBuilder();
+    ArrayList<AnchorPane> layerlist = new ArrayList<>();
+    
+    public void initialize(){
+        layerlist.add(datainput_LAYER);
+        layerlist.add(installing_LAYER);
+    }
+    
     
     public void installModpack(ActionEvent actionEvent) {
         installerrormessage.setText("");
@@ -143,9 +137,7 @@ public class ModpackInstallControler {
         
         // EVERY CHECKS ARE MADE, START OF THE INSTALLATION PROCESS
         
-        TextArea stock = gitoutputmessage;
-        
-        try{
+        /*try{
             //FileUtils.delete(new File(userdata.get(UserData.FILE_PATH)), FileUtils.RECURSIVE);
             try{
                 FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("installer-installing.fxml"));
@@ -169,18 +161,72 @@ public class ModpackInstallControler {
                     
                     
                 TimerTask task = new TimerTask() {
+                    
                     public void run() {
                         try {
-                            ProgressMonitor monitor = new TextProgressMonitor();
+                            Writer writer = new StringWriter();
+                            TextProgressMonitor monitor = new TextProgressMonitor(){
+                                @Override
+                                protected void onUpdate(String taskName, int workCurr) {
+                                    super.onUpdate(taskName, workCurr);
+                                }
+    
+                                @Override
+                                protected void onEndTask(String taskName, int workCurr) {
+                                    super.onEndTask(taskName, workCurr);
+                                }
+    
+                                @Override
+                                protected void onUpdate(String taskName, int cmp, int totalWork, int pcnt) {
+                                    super.onUpdate(taskName, cmp, totalWork, pcnt);
+                                    StringBuilder str = new StringBuilder("\n"+taskName + pcnt +" "+"/"+totalWork);
+                                    HelloApplication.getInstallTextArea().setText(str.toString());
+                                }
+    
+    
+                                *//*
+                                https://github.com/Sawors/Stones_Plugin.git
+                                *//*
+                                @Override
+                                protected void onEndTask(String taskName, int cmp, int totalWork, int pcnt) {
+                                    super.onEndTask(taskName, cmp, totalWork, pcnt);
+                                    //HelloApplication.getInstallTextArea().setText(taskName+cmp+pcnt);
+                                }
+                            };
+    
+                            BatchingProgressMonitor monitor2 = new BatchingProgressMonitor(){
+    
+                                @Override
+                                protected void onUpdate(String s, int i) {
+        
+                                }
+    
+                                @Override
+                                protected void onEndTask(String s, int i) {
+        
+                                }
+    
+                                @Override
+                                protected void onUpdate(String s, int i, int i1, int i2) {
+                                    try{
+                                        Integer integ = i;
+                                        HelloApplication.getInstallTextArea().setText(s+integ);
+                                    } catch (NullPointerException e){
+                                        HelloApplication.getInstallTextArea().setText("-");
+                                    }
+                                }
+    
+                                @Override
+                                protected void onEndTask(String s, int i, int i1, int i2) {
+        
+                                }
+                            };
                             CloneCommand command = Git.cloneRepository().setURI(userdata.get(UserData.MODPACK_URL).replaceFirst("https", "git")).setDirectory(new File(userdata.get(UserData.FILE_PATH)));
-                            command.setProgressMonitor(monitor);
-                            monitor.beginTask("download_process", 1);
-                            monitor.update(1);
+                            command.setProgressMonitor(monitor2);
+                            monitor2.beginTask("download_process", 1024);
+                            monitor2.update(2);
                             command.call();
-                            installerrormessage.setText("ahaahah");
-                            gitoutputmessage.setText(command.toString());
-                            command.call();
-                            monitor.endTask();
+                            monitor2.endTask();
                             
                             System.out.println("hey");
                         } catch (GitAPIException e) {
@@ -200,7 +246,7 @@ public class ModpackInstallControler {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         
     
         checkInfos(urlfield.getText(), filefield.getText(), userdata.get(UserData.FILE_PATH), userdata.get(UserData.MODPACK_URL));
@@ -308,5 +354,26 @@ public class ModpackInstallControler {
     }
     
     public void cancelDownload(ActionEvent actionEvent) {
+    }
+    
+    public void toggleLayouts(ActionEvent actionEvent) {
+        if(installing_LAYER.isDisabled() && !installing_LAYER.isVisible()){
+            setLayer(installing_LAYER);
+        } else {
+            setLayer(datainput_LAYER);
+        }
+    }
+    
+    private void setLayer(AnchorPane layer){
+        for(AnchorPane pane : layerlist){
+            if(pane == layer){
+                pane.setVisible(true);
+                pane.setDisable(false);
+                pane.requestFocus();
+            } else {
+                pane.setVisible(false);
+                pane.setDisable(true);
+            }
+        }
     }
 }

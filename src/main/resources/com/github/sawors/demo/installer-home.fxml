@@ -35,70 +35,104 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sawors.demo.ModpackInstallControler">
 
   <children>
-      <AnchorPane onMouseEntered="#setDefaultMessage" prefWidth="700.0" VBox.vgrow="NEVER">
-          <Label layoutX="171.0" layoutY="141.0" prefHeight="27.0" prefWidth="103.0" style="&#10;" text="Modpack :" textFill="#6e6e6e">
-              <font>
-                  <Font name="Rubik-Bold" size="18.0" />
-              </font>
-          </Label>
-          <TextField fx:id="urlfield" focusTraversable="false" layoutX="171.0" layoutY="169.0" onAction="#setModpackUrl" prefHeight="26.0" prefWidth="298.0" promptText="URL of the modpack repository">
-            <font>
-               <Font name="Rubik-Bold" size="11.0" />
-            </font></TextField>
-          <Button fx:id="install" focusTraversable="false" layoutX="268.0" layoutY="312.0" mnemonicParsing="false" onAction="#installModpack" prefHeight="26.0" prefWidth="103.0" text="Install">
-            <font>
-               <Font name="Rubik-Bold" size="14.0" />
-            </font></Button>
-          <Text layoutX="171.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Simple Modpack Installer" textAlignment="CENTER" wrappingWidth="298.39999999999986">
-              <font>
-                <Font name="Rubik-Bold" size="24.0" />
-              </font>
-          </Text>
-          <Text fill="#808080" layoutX="400.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version : beta-0.1" textAlignment="RIGHT" wrappingWidth="225.336669921875">
-              <font>
-                <Font name="Rubik-Bold" size="10.0" />
-              </font>
-          </Text>
-          <Label layoutX="171.0" layoutY="214.0" prefHeight="27.0" prefWidth="298.0" style="&#10;" text="Where to install ?" textFill="#6e6e6e">
-              <font>
-                <Font name="Rubik-Bold" size="18.0" />
-              </font>
-          </Label>
-          <TextField fx:id="filefield" focusTraversable="false" layoutX="171.0" layoutY="241.0" onAction="#setModpackDirectory" prefHeight="26.0" prefWidth="246.0" promptText="leave blank for default minecraft folder" style="-fx-background-radius: 2 0 0 2;">
-            <font>
-               <Font name="Rubik-Bold" size="11.0" />
-            </font></TextField>
-         <Button fx:id="browsebutton" focusTraversable="false" layoutX="416.0" layoutY="241.0" mnemonicParsing="false" onAction="#openBrowser" prefHeight="26.0" prefWidth="54.0" style="-fx-background-radius: 0 2 2 0;" text="browse">
-            <font>
-               <Font name="Rubik-Bold" size="10.0" />
-            </font>
-         </Button>
-         <Label fx:id="urlerrormessage" contentDisplay="TOP" layoutX="268.0" layoutY="144.0" prefHeight="26.0" prefWidth="202.0" style="&#10;" textAlignment="CENTER" textFill="FIREBRICK">
-            <font>
-               <Font name="Rubik-Bold" size="12.0" />
-            </font>
-         </Label>
-         <Label fx:id="fileerrormessage" alignment="CENTER" contentDisplay="TOP" layoutX="328.0" layoutY="222.0" prefHeight="14.0" prefWidth="143.0" style="&#10;" textAlignment="CENTER" textFill="ORANGE">
-            <font>
-               <Font name="Rubik-Bold" size="10.0" />
-            </font>
-         </Label>
-         <Text fx:id="defaultfoldermessage" fill="#808080" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-style: italic;" textAlignment="CENTER" wrappingWidth="640.0" />
-         <CheckBox fx:id="profilecheck" focusTraversable="false" layoutX="275.0" layoutY="290.0" mnemonicParsing="false" onAction="#toggleDirectory" selected="true" text="Create profile">
-            <font>
-               <Font name="Rubik-Bold" size="10.0" />
-            </font>
-         </CheckBox>
-         <Text fx:id="installerrormessage" fill="FIREBRICK" layoutX="171.0" layoutY="357.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="298.39999999999986">
-            <font>
-               <Font name="Rubik-Bold" size="10.0" />
-            </font>
-         </Text>
-      </AnchorPane>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" />
+      <StackPane prefHeight="150.0" prefWidth="200.0">
+         <children>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" />
+            <AnchorPane fx:id="datainput_LAYER" onMouseEntered="#setDefaultMessage" prefHeight="333.0" prefWidth="640.0">
+                <Label layoutX="171.0" layoutY="141.0" prefHeight="27.0" prefWidth="103.0" style="&#10;" text="Modpack :" textFill="#6e6e6e">
+                    <font>
+                        <Font name="Rubik-Bold" size="18.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="urlfield" focusTraversable="false" layoutX="171.0" layoutY="169.0" onAction="#setModpackUrl" prefHeight="26.0" prefWidth="298.0" promptText="URL of the modpack repository">
+                  <font>
+                     <Font name="Rubik-Bold" size="11.0" />
+                  </font>
+               </TextField>
+                <Button fx:id="install" focusTraversable="false" layoutX="268.0" layoutY="312.0" mnemonicParsing="false" onAction="#installModpack" prefHeight="26.0" prefWidth="103.0" text="Install">
+                  <font>
+                     <Font name="Rubik-Bold" size="14.0" />
+                  </font>
+               </Button>
+                <Text layoutX="171.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Simple Modpack Installer" textAlignment="CENTER" wrappingWidth="298.39999999999986">
+                    <font>
+                      <Font name="Rubik-Bold" size="24.0" />
+                    </font>
+                </Text>
+                <Text fill="#808080" layoutX="400.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version : beta-0.1" textAlignment="RIGHT" wrappingWidth="225.336669921875">
+                    <font>
+                      <Font name="Rubik-Bold" size="10.0" />
+                    </font>
+                </Text>
+                <Label layoutX="171.0" layoutY="214.0" prefHeight="27.0" prefWidth="298.0" style="&#10;" text="Where to install ?" textFill="#6e6e6e">
+                    <font>
+                      <Font name="Rubik-Bold" size="18.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="filefield" focusTraversable="false" layoutX="171.0" layoutY="241.0" onAction="#setModpackDirectory" prefHeight="26.0" prefWidth="246.0" promptText="leave blank for default minecraft folder" style="-fx-background-radius: 2 0 0 2;">
+                  <font>
+                     <Font name="Rubik-Bold" size="11.0" />
+                  </font>
+               </TextField>
+               <Button fx:id="browsebutton" focusTraversable="false" layoutX="416.0" layoutY="241.0" mnemonicParsing="false" onAction="#openBrowser" prefHeight="26.0" prefWidth="54.0" style="-fx-background-radius: 0 2 2 0;" text="browse">
+                  <font>
+                     <Font name="Rubik-Bold" size="10.0" />
+                  </font>
+               </Button>
+               <Label fx:id="urlerrormessage" contentDisplay="TOP" layoutX="268.0" layoutY="144.0" prefHeight="26.0" prefWidth="202.0" style="&#10;" textAlignment="CENTER" textFill="FIREBRICK">
+                  <font>
+                     <Font name="Rubik-Bold" size="12.0" />
+                  </font>
+               </Label>
+               <Label fx:id="fileerrormessage" alignment="CENTER" contentDisplay="TOP" layoutX="328.0" layoutY="222.0" prefHeight="14.0" prefWidth="143.0" style="&#10;" textAlignment="CENTER" textFill="ORANGE">
+                  <font>
+                     <Font name="Rubik-Bold" size="10.0" />
+                  </font>
+               </Label>
+               <Text fx:id="defaultfoldermessage" fill="#808080" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-style: italic;" textAlignment="CENTER" wrappingWidth="640.0" />
+               <CheckBox fx:id="profilecheck" focusTraversable="false" layoutX="275.0" layoutY="290.0" mnemonicParsing="false" onAction="#toggleDirectory" selected="true" text="Create profile">
+                  <font>
+                     <Font name="Rubik-Bold" size="10.0" />
+                  </font>
+               </CheckBox>
+               <Text fx:id="installerrormessage" fill="FIREBRICK" layoutX="171.0" layoutY="357.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="298.39999999999986">
+                  <font>
+                     <Font name="Rubik-Bold" size="10.0" />
+                  </font>
+               </Text>
+               <Button fx:id="toggler" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleLayouts" text="Button" />
+            </AnchorPane>
+            <AnchorPane fx:id="installing_LAYER" disable="true" prefWidth="700.0" visible="false">
+               <children>
+                  <Label alignment="CENTER" layoutX="268.0" layoutY="140.0" prefHeight="27.0" prefWidth="103.0" style="&#10;" text="Installing..." textAlignment="CENTER" textFill="#6e6e6e">
+                     <font>
+                        <Font name="Rubik-Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Text layoutX="171.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Simple Modpack Installer" textAlignment="CENTER" wrappingWidth="298.39999999999986">
+                     <font>
+                        <Font name="Rubik-Bold" size="24.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#808080" layoutX="400.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version : beta-0.1" textAlignment="RIGHT" wrappingWidth="225.336669921875">
+                     <font>
+                        <Font name="Rubik-Bold" size="10.0" />
+                     </font>
+                  </Text>
+                  <ProgressBar fx:id="progressbar" layoutX="95.0" layoutY="168.0" prefHeight="18.0" prefWidth="449.0" progress="0.0" />
+                  <TextArea fx:id="gitoutputmessage" editable="false" focusTraversable="false" layoutX="170.0" layoutY="196.0" prefHeight="121.0" prefWidth="298.0" scaleShape="false">
+                     <font>
+                        <Font name="Rubik-Bold" size="11.0" />
+                     </font>
+                  </TextArea>
+                  <Button fx:id="cancelldownload" cancelButton="true" layoutX="419.0" layoutY="322.0" mnemonicParsing="false" onAction="#cancelDownload" text="Cancel" />
+                  <Button fx:id="toggler1" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleLayouts" text="Button" />
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
   </children>
 </VBox>

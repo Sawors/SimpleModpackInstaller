@@ -6,15 +6,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class HelloApplication extends Application {
     
     private static Stage st2;
     private static TextArea outputmsg;
+    public static TextArea installtextarea = new TextArea();
     
     @Override
     public void start(Stage stage) throws IOException {
@@ -35,8 +33,11 @@ public class HelloApplication extends Application {
         return st2;
     }
     
-    public static TextArea outputMessage(){
-        return outputmsg;
+    public static void setInstallTextArea(TextArea area){
+        installtextarea = area;
     }
     
+    public static TextArea getInstallTextArea(){
+        return installtextarea;
+    }
 }
