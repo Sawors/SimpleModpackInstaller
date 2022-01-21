@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sawors.demo.ModpackInstallControler">
+
+  <children>
+      <AnchorPane prefWidth="700.0" VBox.vgrow="NEVER">
+          <Label alignment="CENTER" layoutX="268.0" layoutY="140.0" prefHeight="27.0" prefWidth="103.0" style="&#10;" text="Installing..." textAlignment="CENTER" textFill="#6e6e6e">
+              <font>
+                  <Font name="Rubik-Bold" size="18.0" />
+              </font>
+          </Label>
+          <Text layoutX="171.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Simple Modpack Installer" textAlignment="CENTER" wrappingWidth="298.39999999999986">
+              <font>
+                <Font name="Rubik-Bold" size="24.0" />
+              </font>
+          </Text>
+          <Text fill="#808080" layoutX="400.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version : beta-0.1" textAlignment="RIGHT" wrappingWidth="225.336669921875">
+              <font>
+                <Font name="Rubik-Bold" size="10.0" />
+              </font>
+          </Text>
+         <ProgressBar fx:id="progressbar" layoutX="95.0" layoutY="168.0" prefHeight="18.0" prefWidth="449.0" progress="0.0" />
+         <TextArea fx:id="gitoutputmessage" editable="true" focusTraversable="false" layoutX="170.0" layoutY="196.0" prefHeight="121.0" prefWidth="298.0" scaleShape="false">
+            <font>
+               <Font name="Rubik-Bold" size="11.0" />
+            </font>
+         </TextArea>
+         <Button fx:id="cancelldownload" cancelButton="true" layoutX="419.0" layoutY="322.0" mnemonicParsing="false" onAction="#cancelDownload" text="Cancel" />
+      </AnchorPane>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" />
+  </children>
+</VBox>
