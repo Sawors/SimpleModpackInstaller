@@ -103,7 +103,6 @@
                      <Font name="Rubik-Bold" size="10.0" />
                   </font>
                </Text>
-               <Button fx:id="toggler" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleLayouts" text="Button" />
             </AnchorPane>
             <AnchorPane fx:id="installing_LAYER" disable="true" prefWidth="700.0" visible="false">
                <children>
@@ -129,7 +128,6 @@
                      </font>
                   </TextArea>
                   <Button fx:id="cancelldownload" cancelButton="true" layoutX="419.0" layoutY="322.0" mnemonicParsing="false" onAction="#cancelDownload" text="Cancel" />
-                  <Button fx:id="toggler1" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleLayouts" text="Button" />
                </children>
             </AnchorPane>
          </children>

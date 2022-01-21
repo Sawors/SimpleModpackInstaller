@@ -7,6 +7,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -38,6 +42,8 @@ public class ModpackInstallControler {
     private boolean createprofile = true;
     private StringBuilder profilename = new StringBuilder();
     ArrayList<AnchorPane> layerlist = new ArrayList<>();
+    private double progress = 0;
+    private String lastprogressstep = "no";
     
     public void initialize(){
         layerlist.add(datainput_LAYER);
@@ -137,116 +143,89 @@ public class ModpackInstallControler {
         
         // EVERY CHECKS ARE MADE, START OF THE INSTALLATION PROCESS
         
-        /*try{
-            //FileUtils.delete(new File(userdata.get(UserData.FILE_PATH)), FileUtils.RECURSIVE);
+        try{
+            //setLayer(installing_LAYER);
+            
             try{
-                FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("installer-installing.fxml"));
-                Scene scene2 = new Scene(fxmlLoader.load(), 640, 390);
-                Stage stage = HelloApplication.getStage();
-                stage.setTitle("Simple Modpack Installer v1.1 - Installing...");
-                stage.setScene(scene2);
-                HelloApplication.getStage().show();
-                HelloApplication.getStage().requestFocus();
+                System.out.println("hehe");
+            } finally {
+                datainput_LAYER.setDisable(true);
+                datainput_LAYER.setVisible(false);
+                installing_LAYER.setDisable(false);
+                installing_LAYER.setVisible(true);
+                gitoutputmessage.requestFocus();
+            }
+        } finally {
+            try{
                 File file = new File(userdata.get(UserData.FILE_PATH));
                 for (int num = 0; file.exists(); num++) {
                     file = new File(userdata.get(UserData.FILE_PATH)+"_" + num);
                 }
                 userdata.put(UserData.FILE_PATH, file.toString());
+    
                 
-                
-                
+        
             } finally {
                 //https://github.com/Sawors/Stones_ResourcePack.git
-                    //
-                    
-                    
-                TimerTask task = new TimerTask() {
-                    
-                    public void run() {
-                        try {
-                            Writer writer = new StringWriter();
-                            TextProgressMonitor monitor = new TextProgressMonitor(){
-                                @Override
-                                protected void onUpdate(String taskName, int workCurr) {
-                                    super.onUpdate(taskName, workCurr);
-                                }
+                //
+                
+                BatchingProgressMonitor monitor = new BatchingProgressMonitor(){
     
-                                @Override
-                                protected void onEndTask(String taskName, int workCurr) {
-                                    super.onEndTask(taskName, workCurr);
-                                }
-    
-                                @Override
-                                protected void onUpdate(String taskName, int cmp, int totalWork, int pcnt) {
-                                    super.onUpdate(taskName, cmp, totalWork, pcnt);
-                                    StringBuilder str = new StringBuilder("\n"+taskName + pcnt +" "+"/"+totalWork);
-                                    HelloApplication.getInstallTextArea().setText(str.toString());
-                                }
-    
-    
-                                *//*
-                                https://github.com/Sawors/Stones_Plugin.git
-                                *//*
-                                @Override
-                                protected void onEndTask(String taskName, int cmp, int totalWork, int pcnt) {
-                                    super.onEndTask(taskName, cmp, totalWork, pcnt);
-                                    //HelloApplication.getInstallTextArea().setText(taskName+cmp+pcnt);
-                                }
-                            };
-    
-                            BatchingProgressMonitor monitor2 = new BatchingProgressMonitor(){
-    
-                                @Override
-                                protected void onUpdate(String s, int i) {
-        
-                                }
-    
-                                @Override
-                                protected void onEndTask(String s, int i) {
-        
-                                }
-    
-                                @Override
-                                protected void onUpdate(String s, int i, int i1, int i2) {
-                                    try{
-                                        Integer integ = i;
-                                        HelloApplication.getInstallTextArea().setText(s+integ);
-                                    } catch (NullPointerException e){
-                                        HelloApplication.getInstallTextArea().setText("-");
-                                    }
-                                }
-    
-                                @Override
-                                protected void onEndTask(String s, int i, int i1, int i2) {
-        
-                                }
-                            };
-                            CloneCommand command = Git.cloneRepository().setURI(userdata.get(UserData.MODPACK_URL).replaceFirst("https", "git")).setDirectory(new File(userdata.get(UserData.FILE_PATH)));
-                            command.setProgressMonitor(monitor2);
-                            monitor2.beginTask("download_process", 1024);
-                            monitor2.update(2);
-                            command.call();
-                            monitor2.endTask();
-                            
-                            System.out.println("hey");
-                        } catch (GitAPIException e) {
-                            e.printStackTrace();
-                        } finally {
-                            this.cancel();
+                    @Override
+                    protected void onUpdate(String s, int i) {
+                        gitoutputmessage.setText("downloading files : " + s + " : " + i+"\n");
+                        if(!Objects.equals(s, lastprogressstep)){
+                            progress += 0.1;
+                            progressbar.setProgress(progress);
                         }
+                        lastprogressstep = s;
+                    }
+    
+                    @Override
+                    protected void onEndTask(String s, int i) {
+        
+                    }
+    
+                    @Override
+                    protected void onUpdate(String s, int i, int i1, int i2) {
+    
+                        gitoutputmessage.setText("downloading files : " + s +"\n");
+                        if(!Objects.equals(s, lastprogressstep)){
+                            progress += 0.1;
+                            progressbar.setProgress(progress);
+                        }
+                        lastprogressstep = s;
+                    }
+    
+                    @Override
+                    protected void onEndTask(String s, int i, int i1, int i2) {
+                    
                     }
                 };
-                Timer timer = new Timer("Timer");
+                CloneCommand command = Git.cloneRepository().setURI(userdata.get(UserData.MODPACK_URL).replaceFirst("https", "git")).setDirectory(new File(userdata.get(UserData.FILE_PATH)));
+                command.setProgressMonitor(monitor);
+                monitor.start(1);
+                //monitor.update(0);
+                Thread gitthread = new Thread(() -> {
+                    try {
+                        command.call();
+                        
+                    } catch (GitAPIException e) {
+                        //e.printStackTrace();
+                    } finally {
+                        monitor.endTask();
+                        gitoutputmessage.setText("downloading files : " + "done !" +"\n");
+                    }
+                });
     
-                long delay = 10L;
-                timer.schedule(task, delay);
-                
-                
+                gitthread.start();
                 
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        }
+        
+            //FileUtils.delete(new File(userdata.get(UserData.FILE_PATH)), FileUtils.RECURSIVE);
+            
+        
         
     
         checkInfos(urlfield.getText(), filefield.getText(), userdata.get(UserData.FILE_PATH), userdata.get(UserData.MODPACK_URL));
