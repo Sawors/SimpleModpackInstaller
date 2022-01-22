@@ -10,9 +10,11 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -43,10 +45,18 @@ public class ModpackInstallControler {
     public ProgressBar progressbar;
     public TextArea gitoutputmessage;
     public Button cancelldownload;
-    
     public ChoiceBox<String> versionselect;
     public TextField jvmargsfield;
+    public Text progresspercenttext;
+    public Pane copyinfosbox;
+    public CheckBox copymcsettings;
+    public CheckBox copymcrp;
+    public CheckBox copymcshaders;
+    public Text installingshowtext;
+    public Button closebutton;
+    
     private boolean createprofile = true;
+    private boolean copyinfos = false;
     private StringBuilder profilename = new StringBuilder();
     ArrayList<AnchorPane> layerlist = new ArrayList<>();
     private double progress = 0;
@@ -56,11 +66,16 @@ public class ModpackInstallControler {
     private final File mc_root = new File(System.getenv("APPDATA")+"\\.minecraft");
     private File profilesfile = new File(mc_root+"\\launcher_profiles.json");
     private String image = "";
+    private Thread workthread;
+    private Thread mainthread = Thread.currentThread();
+    private boolean cancelled = false;
     
     
     
     
     public void initialize() {
+        
+        
         
         try{
             image = new String(Base64.getEncoder().encode(Objects.requireNonNull(HelloApplication.class.getResourceAsStream("resource_img.png")).readAllBytes()));
@@ -70,8 +85,13 @@ public class ModpackInstallControler {
     
         layerlist.add(datainput_LAYER);
         layerlist.add(installing_LAYER);
+    
+        setLayer(datainput_LAYER);
+        
+        
         
         File[] versions = new File(mc_root + "\\versions\\").listFiles();
+        versionlist.add("latest-release");
         if(versions != null){
             for(File v : versions){
                 StringBuilder foo = new StringBuilder(v.toString());
@@ -79,6 +99,8 @@ public class ModpackInstallControler {
                 versionlist.add(foo.toString());
             }
         }
+        
+        versionselect.setValue(versionlist.get(0));
         
         if(!mc_root.exists()){
             installerrormessage.setText("Minecraft root directory (.minecraft) cannot be found on your system");
@@ -176,11 +198,17 @@ public class ModpackInstallControler {
                 userdata.put(UserData.FILE_PATH, filefield.getText()+"\\"+profilename.toString());
             }
         }
-        
-        
+    
+        userdata.put(UserData.VERSION, versionselect.getValue());
         
         
         // EVERY CHECKS ARE MADE, START OF THE INSTALLATION PROCESS
+        
+        
+    
+        progresspercenttext.setText("0%");
+        closebutton.setVisible(true);
+        closebutton.setDisable(true);
         
         try{
             setLayer(installing_LAYER);
@@ -207,10 +235,11 @@ public class ModpackInstallControler {
     
                     @Override
                     protected void onUpdate(String s, int i) {
-                        gitoutputmessage.setText("Downloading files : " + s + " : " + i+"\n");
+                        gitoutputmessage.setText("downloading files : " + s + " : " + i+"\n");
                         if(!Objects.equals(s, lastprogressstep)){
-                            progress += 0.1;
+                            progress += (4/30f);
                             progressbar.setProgress(progress);
+                            progresspercenttext.setText(((int)(progress*100))+"%");
                         }
                         lastprogressstep = s;
                     }
@@ -223,10 +252,11 @@ public class ModpackInstallControler {
                     @Override
                     protected void onUpdate(String s, int i, int i1, int i2) {
     
-                        gitoutputmessage.setText("Downloading files : " + s +"\n");
+                        gitoutputmessage.setText("downloading files : " + s +"\n");
                         if(!Objects.equals(s, lastprogressstep)){
-                            progress += 0.1;
+                            progress += (4/30f);
                             progressbar.setProgress(progress);
+                            progresspercenttext.setText(((int)(progress*100))+"%");
                         }
                         lastprogressstep = s;
                     }
@@ -240,21 +270,38 @@ public class ModpackInstallControler {
                 CloneCommand command = Git.cloneRepository().setURI(userdata.get(UserData.MODPACK_URL).replaceFirst("https", "git")).setDirectory(new File(userdata.get(UserData.FILE_PATH)));
                 command.setProgressMonitor(monitor);
                 monitor.start(1);
-                Thread gitthread = new Thread(() -> {
+                workthread = new Thread(() -> {
                     try {
                         command.call();
-                        gitoutputmessage.setText("Downloading files : " + "done !");
-                        userdata.put(UserData.VERSION, "1.18.1");
-                        writeProfileToFile();
+                        gitoutputmessage.setText("downloading files : " + "done !");
+                        
+                        
                     } catch (GitAPIException e) {
                         e.printStackTrace();
                     } finally {
-                        monitor.endTask();
+                        if(!cancelled){
+                            if(createprofile){
+                                writeProfileToFile(workthread);
+                                copyMCInfos(workthread);
+                            } else {
+                                progress += 0.2;
+                                progressbar.setProgress(progress);
+                                progresspercenttext.setText(((int)(progress*100))+"%");
+                            }
+                            progressbar.setProgress(1);
+                            progresspercenttext.setText(((100))+"%");
+                            progresspercenttext.setFill(Paint.valueOf("#0093c3"));
+                            installingshowtext.setText("Successfully Installed");
+                            closebutton.setDisable(false);
+                            closebutton.setVisible(true);
+                        } else {
+                            setCancelled();
+                        }
                         
+                        monitor.endTask();
                     }
                 });
-    
-                gitthread.start();
+                workthread.start();
             }
             
             
@@ -345,13 +392,30 @@ public class ModpackInstallControler {
         displayDefaultMessage();
     }
     
-    public void toggleDirectory(ActionEvent actionEvent) {
+    public void toggleCreateProfile(ActionEvent actionEvent) {
         if(profilecheck.isSelected()){
             createprofile = true;
+            
+            copyinfosbox.setVisible(true);
+            copyinfosbox.setDisable(false);
+    
+            copymcsettings.setSelected(true);
+            copymcrp.setSelected(true);
+            copymcshaders.setSelected(true);
         } else {
             createprofile = false;
+            
+            copyinfosbox.setVisible(false);
+            copyinfosbox.setDisable(true);
+            
+            copymcsettings.setSelected(false);
+            copymcrp.setSelected(false);
+            copymcshaders.setSelected(false);
         }
         displayDefaultMessage();
+    }
+    
+    public void toggleCopyInfos(ActionEvent actionEvent) {
     }
     
     private void displayDefaultMessage(){
@@ -367,14 +431,11 @@ public class ModpackInstallControler {
     }
     
     public void cancelDownload(ActionEvent actionEvent) {
-    }
-    
-    public void toggleLayouts(ActionEvent actionEvent) {
-        if(installing_LAYER.isDisabled() && !installing_LAYER.isVisible()){
-            setLayer(installing_LAYER);
-        } else {
-            setLayer(datainput_LAYER);
+        cancelled = true;
+        if(workthread.isAlive()){
+            workthread.interrupt();
         }
+        setCancelled();
     }
     
     private void setLayer(AnchorPane layer){
@@ -400,50 +461,150 @@ public class ModpackInstallControler {
         System.out.println("indeed");
     }
     
-    public void writeProfileToFile(){
-        try{
-            gitoutputmessage.appendText("\nProfile : creating");
-            Gson gson = new Gson();
-            JsonObject jsonobj = gson.fromJson(new FileReader(profilesfile), JsonObject.class);
-            File file = new File(mc_root+"\\launcher_profiles_SMIbackup.json");
-            file.createNewFile();
-            
-            byte[] foo;
-            try(FileInputStream in = new FileInputStream(profilesfile)){
-                foo = in.readAllBytes();
+    public void copyMCInfos(Thread thread){
+        File profiledirectory = new File(userdata.get(UserData.FILE_PATH)+"\\");
+        File settings = new File(mc_root+"\\options.txt");
+        File settingsoptifine = new File(mc_root+"\\optionsof.txt");
+        File resourcepacks = new File(mc_root+"\\resourcepacks");
+        File shaderpacks = new File(mc_root+"\\shaderpacks");
+        
+        if(copymcsettings.isSelected() && thread.isAlive() && !cancelled){
+            gitoutputmessage.appendText("\ncopying settings : copying...");
+            try{
+                if(settings.exists() && profiledirectory.exists() && thread.isAlive() && !cancelled){
+                    org.apache.commons.io.FileUtils.copyFileToDirectory(settings, profiledirectory);
+                }
+                if(settingsoptifine.exists() && profiledirectory.exists() && thread.isAlive() && !cancelled){
+                    org.apache.commons.io.FileUtils.copyFileToDirectory(settingsoptifine, profiledirectory);
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
-            try(FileOutputStream out = new FileOutputStream(file)){
-                out.write(foo);
-            }
-            
-            
-            StringBuilder time = new StringBuilder(Clock.systemUTC().instant().atZone(ZoneId.systemDefault()).toString());
-            time.delete(time.length()-26, time.length());
-            time.append('Z');
-            
-            
-            HashMap<String, String> map = new HashMap<>();
-            map.put("created", time.toString());
-            map.put("gameDir", userdata.get(UserData.FILE_PATH));
-            map.put("icon", "data:image/png;base64,"+ image);
-            map.put("javaArgs", userdata.get(UserData.JVM));
-            map.put("lastUsed", time.toString());
-            map.put("lastVersionId", userdata.get(UserData.VERSION));
-            map.put("name", profilename.toString());
-            map.put("type", "custom");
-        
-        
-            jsonobj.get("profiles").getAsJsonObject().add(String.valueOf(UUID.randomUUID()), JsonParser.parseString(gson.toJson(map)));
-        
-        
-            try(FileOutputStream outs = new FileOutputStream(profilesfile)){
-                outs.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonobj).getBytes());
-            }
-        
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            gitoutputmessage.setText(gitoutputmessage.getText().replaceAll("\nProfile : creating", "\nProfile : created !"));
+            gitoutputmessage.setText(gitoutputmessage.getText().replaceAll("copying settings : copying...", "copying settings : done !"));
         }
+        progress += 0.1/3f;
+        progressbar.setProgress(progress);
+        progresspercenttext.setText(((int)(progress*100))+"%");
+        
+        if(copymcrp.isSelected() && thread.isAlive() && !cancelled){
+            gitoutputmessage.appendText("\ncopying resource packs : copying...");
+            try{
+                if(resourcepacks.exists() && profiledirectory.exists() && thread.isAlive() && !cancelled){
+                    org.apache.commons.io.FileUtils.copyDirectoryToDirectory(resourcepacks, profiledirectory);
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            gitoutputmessage.setText(gitoutputmessage.getText().replaceAll("copying resource packs : copying...", "copying resource packs : done !"));
+        }
+        progress += 0.1/3f;
+        progressbar.setProgress(progress);
+        progresspercenttext.setText(((int)(progress*100))+"%");
+        
+        if(copymcshaders.isSelected() && thread.isAlive() && !cancelled){
+            gitoutputmessage.appendText("\ncopying shader packs : copying...");
+            try{
+                if(shaderpacks.exists() && profiledirectory.exists() && thread.isAlive() && !cancelled){
+                    org.apache.commons.io.FileUtils.copyDirectoryToDirectory(shaderpacks, profiledirectory);
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            gitoutputmessage.setText(gitoutputmessage.getText().replaceAll("copying shader packs : copying...", "copying shader packs : done !"));
+        }
+        if(thread.isAlive() && !cancelled){
+            progress += 0.1/3f;
+            progressbar.setProgress(progress);
+            progresspercenttext.setText(((int)(progress*100))+"%");
+    
+            gitoutputmessage.appendText("\n\nInstallation process finished !");
+            cancelldownload.setDisable(true);
+        }
+        if(cancelled){
+                setCancelled();
+        }
+    }
+    
+    public void writeProfileToFile(Thread thread){
+        
+        if(thread.isAlive() && !cancelled){
+            try{
+                gitoutputmessage.appendText("\ncreating profile : creating");
+                Gson gson = new Gson();
+                JsonObject jsonobj = gson.fromJson(new FileReader(profilesfile), JsonObject.class);
+                File file = new File(mc_root+"\\launcher_profiles_SMIbackup.json");
+                file.createNewFile();
+        
+                byte[] foo;
+                try(FileInputStream in = new FileInputStream(profilesfile)){
+                    foo = in.readAllBytes();
+                }
+                try(FileOutputStream out = new FileOutputStream(file)){
+                    out.write(foo);
+                }
+        
+        
+                StringBuilder time = new StringBuilder(Clock.systemUTC().instant().atZone(ZoneId.systemDefault()).toString());
+                time.delete(time.length()-26, time.length());
+                time.append('Z');
+        
+        
+                HashMap<String, String> map = new HashMap<>();
+                map.put("created", time.toString());
+                map.put("gameDir", userdata.get(UserData.FILE_PATH));
+                map.put("icon", "data:image/png;base64,"+ image);
+                map.put("javaArgs", userdata.get(UserData.JVM));
+                map.put("lastUsed", time.toString());
+                map.put("lastVersionId", userdata.get(UserData.VERSION));
+                map.put("name", profilename.toString());
+                map.put("type", "custom");
+        
+        
+                jsonobj.get("profiles").getAsJsonObject().add(String.valueOf(UUID.randomUUID()), JsonParser.parseString(gson.toJson(map)));
+        
+        
+                try(FileOutputStream outs = new FileOutputStream(profilesfile)){
+                    outs.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonobj).getBytes());
+                }
+        
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                gitoutputmessage.setText(gitoutputmessage.getText().replaceAll("\ncreating profile : creating", "\ncreating profile : done !"));
+            }
+        }
+        progress += 0.1;
+        progressbar.setProgress(progress);
+        progresspercenttext.setText(((int)(progress*100))+"%");
+    }
+    
+    private void setCancelled(){
+        progresspercenttext.setText("cancelled");
+        progresspercenttext.setFill(Paint.valueOf("#b22222"));
+        progressbar.setProgress(1);
+        if(!gitoutputmessage.getText().contains("Installation process cancelled")){
+            gitoutputmessage.appendText("\n\nInstallation process cancelled");
+        }
+        cancelldownload.setDisable(true);
+
+        new Thread(() -> {
+            try {
+                File file = new File(userdata.get(UserData.FILE_PATH));
+                if(file.exists()){
+                    try{
+                        FileUtils.deleteDirectory(file);
+                    } finally {
+                        if(new File(userdata.get(UserData.FILE_PATH)).exists()){
+                            new File(userdata.get(UserData.FILE_PATH)).delete();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    
+    public void closeButtonPressed(ActionEvent actionEvent) {
     }
 }

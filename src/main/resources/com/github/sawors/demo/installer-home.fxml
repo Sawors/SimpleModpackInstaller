@@ -34,6 +34,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.*?>
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sawors.demo.ModpackInstallControler">
 
@@ -87,11 +88,11 @@
                      <Font name="Rubik-Bold" size="10.0" />
                   </font>
                </Label>
-               <Text fx:id="defaultfoldermessage" fill="#808080" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="640.0">
+               <Text fx:id="defaultfoldermessage" fill="#808080" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="RIGHT" wrappingWidth="471.4">
                   <font>
                      <Font name="Rubik Italic" size="9.0" />
                   </font></Text>
-               <CheckBox fx:id="profilecheck" focusTraversable="false" layoutX="275.0" layoutY="291.0" mnemonicParsing="false" onAction="#toggleDirectory" selected="true" text="Create profile" textFill="#6b6b6b">
+               <CheckBox fx:id="profilecheck" focusTraversable="false" layoutX="275.0" layoutY="290.0" mnemonicParsing="false" onAction="#toggleCreateProfile" selected="true" text="Create profile" textFill="#6b6b6b">
                   <font>
                      <Font name="Rubik-Bold" size="10.0" />
                   </font>
@@ -107,24 +108,44 @@
                      <Font name="Rubik-Bold" size="11.0" />
                   </font>
                </TextField>
-                <Button fx:id="install" focusTraversable="false" layoutX="268.0" layoutY="354.0" mnemonicParsing="false" onAction="#installModpack" prefHeight="26.0" prefWidth="103.0" text="Install">
+                <Button fx:id="install" focusTraversable="false" layoutX="268.0" layoutY="357.0" mnemonicParsing="false" onAction="#installModpack" prefHeight="26.0" prefWidth="103.0" text="Install">
                   <font>
                      <Font name="Rubik-Bold" size="14.0" />
                   </font>
                </Button>
-               <Text fill="#6b6b6b" layoutX="504.0" layoutY="327.0" onMouseClicked="#moreoption_goto" strokeType="OUTSIDE" strokeWidth="0.0" text="More options → ">
+               <Text disable="true" fill="#6b6b6b" layoutX="504.0" layoutY="327.0" onMouseClicked="#moreoption_goto" strokeType="OUTSIDE" strokeWidth="0.0" text="More options → " visible="false">
                   <font>
                      <Font name="Rubik-Bold" size="12.0" />
                   </font>
                </Text>
+               <Pane fx:id="copyinfosbox" layoutX="480.0" layoutY="244.0" prefHeight="90.0" prefWidth="143.0">
+                  <children>
+                     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="90.0" layoutY="1.0" stroke="#808080" strokeType="INSIDE" width="143.0" />
+                     <CheckBox fx:id="copymcsettings" focusTraversable="false" layoutX="13.0" layoutY="24.0" mnemonicParsing="false" onAction="#toggleCopyInfos" selected="true" text="Minecraft settings" textFill="#6b6b6b">
+                        <font>
+                           <Font name="Rubik-Bold" size="10.0" />
+                        </font>
+                     </CheckBox>
+                     <Text fill="#6b6b6b" layoutX="48.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Copy">
+                        <font>
+                           <Font name="Rubik-Bold" size="16.0" />
+                        </font>
+                     </Text>
+                     <CheckBox fx:id="copymcrp" focusTraversable="false" layoutX="13.0" layoutY="43.0" mnemonicParsing="false" onAction="#toggleCopyInfos" selected="true" text="Resource Packs" textFill="#6b6b6b">
+                        <font>
+                           <Font name="Rubik-Bold" size="10.0" />
+                        </font>
+                     </CheckBox>
+                     <CheckBox fx:id="copymcshaders" focusTraversable="false" layoutX="13.0" layoutY="63.0" mnemonicParsing="false" onAction="#toggleCopyInfos" selected="true" text="Shaders Packs" textFill="#6b6b6b">
+                        <font>
+                           <Font name="Rubik-Bold" size="10.0" />
+                        </font>
+                     </CheckBox>
+                  </children>
+               </Pane>
             </AnchorPane>
-            <AnchorPane fx:id="installing_LAYER" disable="true" prefWidth="700.0" visible="false">
+            <AnchorPane fx:id="installing_LAYER" prefWidth="700.0" visible="false">
                <children>
-                  <Label alignment="CENTER" layoutX="268.0" layoutY="140.0" prefHeight="27.0" prefWidth="103.0" style="&#10;" text="Installing..." textAlignment="CENTER" textFill="#6e6e6e">
-                     <font>
-                        <Font name="Rubik-Bold" size="18.0" />
-                     </font>
-                  </Label>
                   <Text layoutX="171.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Simple Modpack Installer" textAlignment="CENTER" wrappingWidth="298.39999999999986">
                      <font>
                         <Font name="Rubik-Bold" size="24.0" />
@@ -136,12 +157,23 @@
                      </font>
                   </Text>
                   <ProgressBar fx:id="progressbar" layoutX="95.0" layoutY="168.0" prefHeight="18.0" prefWidth="449.0" progress="0.0" />
-                  <TextArea fx:id="gitoutputmessage" editable="false" focusTraversable="false" layoutX="170.0" layoutY="196.0" prefHeight="121.0" prefWidth="298.0" scaleShape="false">
+                  <TextArea fx:id="gitoutputmessage" editable="false" focusTraversable="false" layoutX="170.0" layoutY="204.0" prefHeight="116.0" prefWidth="298.0" scaleShape="false">
                      <font>
                         <Font name="Rubik-Bold" size="11.0" />
                      </font>
                   </TextArea>
-                  <Button fx:id="cancelldownload" cancelButton="true" layoutX="419.0" layoutY="322.0" mnemonicParsing="false" onAction="#cancelDownload" text="Cancel" />
+                  <Button fx:id="cancelldownload" cancelButton="true" layoutX="170.0" layoutY="327.0" mnemonicParsing="false" onAction="#cancelDownload" prefHeight="26.0" prefWidth="62.0" text="Cancel" />
+                  <Text fx:id="progresspercenttext" layoutX="171.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="not set" textAlignment="CENTER" wrappingWidth="298.4">
+                     <font>
+                        <Font name="Rubik-Bold" size="14.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="installingshowtext" fill="#6e6e6e" layoutX="94.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Installing..." textAlignment="CENTER" wrappingWidth="449.60000000000025">
+                     <font>
+                        <Font name="Rubik-Bold" size="18.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="closebutton" defaultButton="true" layoutX="406.0" layoutY="327.0" mnemonicParsing="false" onAction="#closeButtonPressed" prefHeight="26.0" prefWidth="62.0" text="Exit" />
                </children>
             </AnchorPane>
          </children>
