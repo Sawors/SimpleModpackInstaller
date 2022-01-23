@@ -22,8 +22,15 @@ It can also be used to organise the use of multiple modpacks with the default Mi
 ## Features :
 ### Directory per Modpack
 Each time you install a Modpack using the SimpleModpackInstaller, 
-a new directory is created in *.minecraft/profiles/* with the modpack name : *.minecraft/profiles/MODPACKNAME/*.
+a new directory is created in */.minecraft/profiles/* with the modpack name : */.minecraft/profiles/MODPACKNAME/*.
 If the directory already exists, a new one is created with MODPACKNAME_1 or bigger number for each copy.
 ### Profile Creation
+When the Modpack is downloaded and you ticked the **Create profile** box, a new profile is added to your Minecraft Launcher with the modpack directory set as it's *Game Directory*
 ### Auto RAM
+The newly created profile is initialised with the highest ram value for your system :
+| System RAM | Profile RAM |
+| <= 8Go | 5Go |
+| <= 16Go | 8Go |
+| > 16Go | 10Go |
+
 ### Copying infos
