@@ -55,6 +55,7 @@ public class ModpackInstallControler {
     public CheckBox copymcshaders;
     public Text installingshowtext;
     public Button closebutton;
+    public Text versiondisplay;
     
     private boolean createprofile = true;
     private boolean copyinfos = false;
@@ -76,7 +77,7 @@ public class ModpackInstallControler {
     
     public void initialize() {
         
-        
+        versiondisplay.setText("version : release  "+InstallerApp.getVersion());
         
         try{
             image = new String(Base64.getEncoder().encode(Objects.requireNonNull(InstallerApp.class.getResourceAsStream("resource_img.png")).readAllBytes()));

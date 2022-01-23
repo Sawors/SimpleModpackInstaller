@@ -36,7 +36,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.*?>
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sawors.demo.ModpackInstallControler">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sawors.demo.ModpackInstallControler">
 
   <children>
       <StackPane prefHeight="150.0" prefWidth="200.0">
@@ -58,7 +58,7 @@
                       <Font name="Rubik-Bold" size="24.0" />
                     </font>
                 </Text>
-                <Text fill="#808080" layoutX="400.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version : beta-0.1" textAlignment="RIGHT" wrappingWidth="225.336669921875">
+                <Text fx:id="versiondisplay" fill="#808080" layoutX="400.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version : release  1.0" textAlignment="RIGHT" wrappingWidth="225.336669921875">
                     <font>
                       <Font name="Rubik-Bold" size="10.0" />
                     </font>

@@ -10,14 +10,14 @@
     <groupId>
         com.github.sawors
     </groupId>
-    <artifactId>
-        demo
-    </artifactId>
     <version>
-        1.0-SNAPSHOT
+        1.0
     </version>
+    <artifactId>
+        SimpleModpackInstaller
+    </artifactId>
     <name>
-        demo
+        SimpleModpackInstaller
     </name>
     <packaging>jar</packaging>
     <properties>
@@ -191,7 +191,7 @@
                         <configuration>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>project-classifier</shadedClassifierName>
-                            <outputFile>shade\${project.artifactId}.jar</outputFile>
+                            <outputFile>shade\${project.name}-${project.version}.jar</outputFile>
                             <transformers>
                                 <transformer implementation=
                                                      "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
