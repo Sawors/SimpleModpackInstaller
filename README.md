@@ -14,5 +14,7 @@ It can also be used to organise the use of multiple modpacks with the default Mi
 - copy your shaderpacks to your new profile
 
 
+## Appearance :
+
 ![Alt text](installer_appearance.png?raw=true "Appearance")
 
