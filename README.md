@@ -23,9 +23,7 @@ It can also be used to organise the use of multiple modpacks with the default Mi
 ### Directory per Modpack
 Each time you install a Modpack using the SimpleModpackInstaller, 
 a new directory is created in .minecraft/profiles/ with the modpack name : *.minecraft/profiles/MODPACKNAME/*.
-If the directory already exists, a new one is created with MODPACKNAME_X (exemple : 1 copy already exists : 
-  *.minecraft/profiles/MODPACKNAME/*
-  *.minecraft/profiles/MODPACKNAME_1/*
+If the directory already exists, a new one is created with MODPACKNAME_1 or bigger number for each copy.
 ### Profile Creation
 ### Auto RAM
 ### Copying infos
