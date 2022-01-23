@@ -19,7 +19,7 @@
     <name>
         demo
     </name>
-
+    <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>
             UTF-8
@@ -120,7 +120,6 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.17.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -172,11 +171,51 @@
                         </id>
                         <configuration>
                             <mainClass>
-                                com.github.sawors.demo/com.github.sawors.demo.HelloApplication
+                                com.github.sawors.demo.HelloApplication
                             </mainClass>
+                            <bindServices>true</bindServices>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>project-classifier</shadedClassifierName>
+                            <outputFile>shade\${project.artifactId}.jar</outputFile>
+                            <transformers>
+                                <transformer implementation=
+                                                     "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.github.sawors.demo.AppLauncher</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.github.sawors.demo.AppLauncher</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
