@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -78,7 +79,7 @@ public class ModpackInstallControler {
         
         
         try{
-            image = new String(Base64.getEncoder().encode(Objects.requireNonNull(HelloApplication.class.getResourceAsStream("resource_img.png")).readAllBytes()));
+            image = new String(Base64.getEncoder().encode(Objects.requireNonNull(InstallerApp.class.getResourceAsStream("resource_img.png")).readAllBytes()));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -606,5 +607,6 @@ public class ModpackInstallControler {
     }
     
     public void closeButtonPressed(ActionEvent actionEvent) {
+        Platform.exit();
     }
 }

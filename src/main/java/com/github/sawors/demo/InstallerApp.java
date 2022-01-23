@@ -9,17 +9,17 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class HelloApplication extends Application {
+public class InstallerApp extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("installer-home.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(InstallerApp.class.getResource("installer-home.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 640, 390);
         stage.setTitle("Simple Modpack Installer v1.1");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        stage.getIcons().add(new Image(Objects.requireNonNull(HelloApplication.class.getResourceAsStream("resource_img.png"))));
+        stage.getIcons().add(new Image(Objects.requireNonNull(InstallerApp.class.getResourceAsStream("resource_img.png"))));
     }
     
     public static void main(String[] args) {
