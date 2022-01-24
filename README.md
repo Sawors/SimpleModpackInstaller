@@ -1,8 +1,8 @@
 # SimpleModpackInstaller #
 
-This tool is used to simplify the installation process of Minecraft Modpacks published as a Git repository.
+This tool is used to simplify the installation process of Minecraft Modpacks published as Git repositories.
 
-It can also be used to organise the use of multiple modpacks with the default Minecraft launcher by offering the option of creating a custom profile per modpack. 
+It can also be used to organise the use of multiple modpacks with the default Minecraft launcher by offering the option to create a custom profile per modpack. 
 
 
 ## Features Summary : ##
@@ -19,12 +19,12 @@ It can also be used to organise the use of multiple modpacks with the default Mi
 ![Alt text](installer_appearance.png?raw=true "Appearance")
 
 ## How to Install a Modpack ##
-1) put the modpack .git link in **Modpack :** (the one you get for instance from Github  
+1) put the modpack .git link in **Modpack :** (the one you get for instance from Github)  
 `Code > HTTPS > https://github.com/Author/Modpack.git`  
 
 2) in **Where to install ?** leave blank for auto profile creation (**highly recommended**) or input your own directory. The installer will **always** create a */MODPACK_NAME/* directory where you want to install.  
 
-3) if you want to create a profile in the launcher tick **[] Create profile**  
+3) if you want to create a profile in the launcher tick **[ ] Create profile**  
 
 4) if you choose to create a profile, specify which Minecraft data you want to copy  
 
