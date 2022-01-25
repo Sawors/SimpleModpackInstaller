@@ -2,7 +2,7 @@
 
 This tool is used to simplify the installation process of Minecraft Modpacks published as Git repositories.
 
-It can also be used to organise the use of multiple modpacks with the default Minecraft launcher by offering the option of creating a custom profile for each modpack. 
+It can also be used to organise the use of multiple modpacks with the default Minecraft launcher by offering the option to create a custom profile for each modpack. 
 
 
 ## Features Summary : ##
