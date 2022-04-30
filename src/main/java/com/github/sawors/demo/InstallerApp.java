@@ -22,7 +22,8 @@ public class InstallerApp extends Application {
         stage.getIcons().add(new Image(Objects.requireNonNull(InstallerApp.class.getResourceAsStream("resource_img.png"))));
     }
     
-    private static String version = "1.0";
+    // DONT'T FORGET TO CHANGE THE VERSION IN THE POM.XML TOO !!! :P
+    private static final String version = "1.3";
     
     public static void main(String[] args) {
         launch();
